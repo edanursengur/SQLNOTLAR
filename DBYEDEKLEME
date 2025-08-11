@@ -1,0 +1,28 @@
+DECLARE @name NVARCHAR(128) -- Veritabanı adı
+DECLARE @path NVARCHAR(256) -- Yedekleme dosyasının yolu
+DECLARE @fileName NVARCHAR(256) -- Yedek dosyası adı
+DECLARE @backupCommand NVARCHAR(MAX)
+
+-- Yedeklerin kaydedileceği klasör (sunucuda yazma izni olmalı)
+SET @path = 'C:\Backup\' 
+
+DECLARE db_cursor CURSOR FOR
+SELECT name FROM sys.databases
+WHERE name NOT IN ('tempdb') -- tempdb yedeklenmez
+
+OPEN db_cursor
+FETCH NEXT FROM db_cursor INTO @name
+
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    SET @fileName = @path + @name + '_Full_' + CONVERT(VARCHAR(8), GETDATE(), 112) + '.bak'
+    SET @backupCommand = 'BACKUP DATABASE [' + @name + '] TO DISK = N''' + @fileName + ''' WITH INIT, NAME = ''' + @name + ' Full Backup'''
+
+    PRINT @backupCommand
+    EXEC(@backupCommand)
+
+    FETCH NEXT FROM db_cursor INTO @name
+END
+
+CLOSE db_cursor
+DEALLOCATE db_cursor

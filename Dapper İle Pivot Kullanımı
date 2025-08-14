@@ -13,4 +13,17 @@ WHERE KisiSosyalMedyaHesaplariID = @kisiHesapID
   AND ZamansalDeger1 BETWEEN @startDate AND @endDate
 GROUP BY IlgiliSosyalMedyaIcerikID
 ORDER BY IlgiliSosyalMedyaIcerikID DESC;";
+using var connection = new SqlConnection("Data Source=");
+
+            var result = connection.Query<TimeLineResponseModel>(sql, new
+            {
+                kisiHesapID = model.KisiSosyalMedyaHesaplariID,
+                createTimeID = displatformParametreTanimCreate_TimeID,
+                titleID = displatformParametreTanimTitleID,
+                likeID = displatformParametreTanimLike_CountID,
+                commentID = displatformParametreTanimComment_CountID,
+                shareID = displatformParametreTanimShareID,
+                startDate = model.KayitTarihi,
+                endDate = model.GuncellenmeTarihi
+            }).ToList();
 

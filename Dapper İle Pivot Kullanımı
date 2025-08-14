@@ -1,0 +1,16 @@
+PİVOT KULLANIMI AYRINTILARI ARAŞTIRILACAK
+var sql = @"SELECT 
+    IlgiliSosyalMedyaIcerikID,
+    MAX(CASE WHEN DisPlatformParametreTanimID = @createTimeID THEN ZamansalDeger1 END) AS Date,
+    MAX(CASE WHEN DisPlatformParametreTanimID = @titleID THEN MetinselDeger1 END) AS Title,
+    MAX(CASE WHEN DisPlatformParametreTanimID = @likeID THEN SayisalDeger1 END) AS [Like],
+    MAX(CASE WHEN DisPlatformParametreTanimID = @commentID THEN SayisalDeger1 END) AS Comment,
+    MAX(CASE WHEN DisPlatformParametreTanimID = @shareID THEN SayisalDeger1 END) AS [Save],
+    MAX(CASE WHEN DisPlatformParametreTanimID = @createTimeID THEN MetinselDeger1 END) AS ImageUrl
+FROM DisPlatformParametreDegerleri
+WHERE KisiSosyalMedyaHesaplariID = @kisiHesapID
+  AND DisPlatformParametreTanimID IN (@createTimeID, @titleID, @likeID, @commentID, @shareID)
+  AND ZamansalDeger1 BETWEEN @startDate AND @endDate
+GROUP BY IlgiliSosyalMedyaIcerikID
+ORDER BY IlgiliSosyalMedyaIcerikID DESC;";
+
